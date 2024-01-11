@@ -10,7 +10,6 @@ class teamcity::agent(
   $download_path = "/tmp/teamcity.zip"
   $destination_path = "/opt/teamcity-agent"
 
-  $packages = ['wget','unzip']
   package { $packages:
     ensure => present,
   }
