@@ -6,7 +6,7 @@ class teamcity::agent(
   if $master_url == undef {
     fail("Teamcity::Agent[${agent_name}]: Please set \$master_url")
   }
-  $download_url = "http://teamcity.localdomain:8111/update/buildAgent.zip"
+  $download_url = "${master_url}/update/buildAgent.zip"
   $download_path = "/tmp/teamcity.zip"
   $destination_path = "/opt/teamcity-agent"
 
