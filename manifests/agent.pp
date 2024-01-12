@@ -8,7 +8,7 @@ class teamcity::agent(
   }
   $download_url = "${master_url}/update/buildAgent.zip"
   $download_path = "/tmp/teamcity.zip"
-  $destination_path = "/opt/teamcity-agent"
+  $destination_path = "/opt/teamcity_agent_${agent_name}/"
 
   Archive {
     provider => 'wget',
