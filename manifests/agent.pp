@@ -10,20 +10,21 @@ class teamcity::agent(
   $download_path = "/tmp/teamcity.zip"
   $destination_path = "/opt/teamcity_agent_${agent_name}/"
 
-  Archive {
-    provider => 'wget',
-    require => Package['wget']
-  }
+
   file {$destination_path:
     ensure => 'directory'
+  } ->
+  exec{'download_agent':
+    command => "/usr/bin/wget ${download_url} -O /tmp/buildAgent.zip",
+    unless => "/usr/bin/test -f ${$destination_path}/bin/agent.sh"
+  } ->
+  exec{'descompress':
+    command => "/usr/bin/unzip /tmp/buildAgent.zip",
+    cwd => "${destination_path}",
+    unless => "/usr/bin/test -f ${$destination_path}/bin/agent.sh"
+  } ->
+  file{'cleanup':
+    path => "/tmp/buildAgent.zip",
+    ensure => "absent"
   }
-
-  archive { $download_path:
-    ensure => present,
-    source => $download_url,
-    extract         => true,
-    extract_path    => $destination_path,
-    cleanup         => true,
-  }
-
 }
