@@ -1,4 +1,4 @@
-class teamcity::agent::service::systemd(
+class teamcity::systemd(
   $agent_name = $title,
   ) {
 
