@@ -2,7 +2,7 @@ class teamcity::agent::systemd(
   $agent_name = $title,
   ) {
 
-  $agent_dir = "/opt/teamcity_agent_${agent_name}/"
+  $agent_dir = $::teamcity::agent_dir
 
   file { '/lib/systemd/system/build-agent.service':
     ensure  => 'file',
