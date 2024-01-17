@@ -14,7 +14,6 @@ Environment="TEAMCITY_DATA_PATH=/var/lib/teamcity"
 
 PIDFile=<%= @agent_dir %>/logs/buildAgent.pid
 ExecStart=<%= @agent_dir %>/bin/agent.sh start
-ExecStartPre=<%= @agent_dir %>/bin/agent.sh stop force
 ExecStop=<%= @agent_dir %>/bin/agent.sh stop
 
 [Install]
