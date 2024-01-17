@@ -1,6 +1,4 @@
-class teamcity::agent::systemd(
-  $agent_name = $title,
-  ) {
+class teamcity::agent::systemd{
 
   $agent_dir = $::teamcity::agent_dir
   $agent_name = $::teamcity::agent_name
