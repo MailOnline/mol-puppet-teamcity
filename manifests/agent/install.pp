@@ -1,14 +1,8 @@
-class teamcity::agent(
-  $agent_name = $title,
-  $master_url = undef,
-  $port       = '9090',)
+class teamcity::agent::install
 {
-  if $master_url == undef {
-    fail("Teamcity::Agent[${agent_name}]: Please set \$master_url")
-  }
-  $download_url = "${master_url}/update/buildAgent.zip"
+  $download_url = "${::teamcity::server_url}/update/buildAgent.zip"
   $download_path = "/tmp/teamcity.zip"
-  $destination_path = "/opt/teamcity_agent_${agent_name}/"
+  $destination_path = $::teamcity::agent_dir
 
 
   file {$destination_path:
@@ -26,5 +20,8 @@ class teamcity::agent(
   file{'cleanup':
     path => "/tmp/buildAgent.zip",
     ensure => "absent"
+  }->
+  exec{'perms':
+    command => "/usr/bin/chown ${::teamcity::agent_user}:${::teamcity::agent_group} ${destination_path} -R"
   }
 }
