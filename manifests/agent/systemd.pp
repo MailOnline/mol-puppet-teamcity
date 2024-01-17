@@ -18,7 +18,7 @@ class teamcity::agent::systemd{
     refreshonly => true,
   }
 
-  service { 'build-agent.service':
+  service { "teamcity-agent-${agent_name}.service":
     ensure     => 'running',
     enable     => 'true',
     hasstatus  => true,
