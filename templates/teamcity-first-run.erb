@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# File is managed by Puppet.
+#
+
+# Stops the service If is running
+systemctl is-active --quiet  teamcity-agent-a26.service && systemctl stop teamcity-agent-a26.service
+ /opt/teamcity_agent_a26/bin/agent.sh stop kill 2>/dev/null
+# Starts the service as root using the scripts provided by teamcity and waits 120 seconds to allow it to self-upgrade
+/opt/teamcity_agent_a26/bin/agent.sh start
+sleep 60
+# Stops the service, fix the permissions
+/opt/teamcity_agent_a26/bin/agent.sh stop kill 2>/dev/null
+chown teamcity:teamcity /opt/teamcity_agent_a26/ -R
+# and starts again the service via systmed
+systemctl is-active --quiet  teamcity-agent-a26.service || systemctl start teamcity-agent-a26.service
