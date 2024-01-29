@@ -28,9 +28,6 @@ class teamcity::agent::config
     mode    => '0755',
     content => template("${module_name}/teamcity-profile.erb"),
   }
-  exec{'perms_after_config':
-    command => "/usr/bin/chown ${::teamcity::agent_user}:${::teamcity::agent_group} ${agent_dir} -R"
-  }
 
   # This script is intended to be run manually after the installation
   file { "${agent_dir}/first-run.sh":

@@ -15,13 +15,15 @@ class teamcity::agent::install
   exec{'descompress':
     command => "/usr/bin/unzip /tmp/buildAgent.zip",
     cwd => "${destination_path}",
-    unless => "/usr/bin/test -f ${$destination_path}/bin/agent.sh"
+    unless => "/usr/bin/test -f ${$destination_path}/bin/agent.sh",
+    notify => Exec['perms']
   } ->
   file{'cleanup':
     path => "/tmp/buildAgent.zip",
     ensure => "absent"
   }->
   exec{'perms':
-    command => "/usr/bin/chown ${::teamcity::agent_user}:${::teamcity::agent_group} ${destination_path} -R"
+    command => "/usr/bin/chown ${::teamcity::agent_user}:${::teamcity::agent_group} ${destination_path} -R",
+    refreshonly => true
   }
 }
