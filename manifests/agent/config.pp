@@ -1,40 +1,37 @@
 class teamcity::agent::config
  {
   $agent_dir = $::teamcity::agent_dir
+  $agent_name = $::teamcity::agent_name
+  $server_url = $::teamcity::server_url
+ # config
 
-  $required_properties = {
-    'serverUrl' => $::teamcity::server_url,
-    'name'      => $::teamcity::agent_name,
-  }
+  exec { "create agent ${agent_name} buildAgent.dist":
+    command   => 'cp buildAgent.dist.properties buildAgent.properties',
+    cwd       => "${agent_dir}/conf",
+    path      => '/usr/bin:/bin',
+    unless    => 'test -f buildAgent.properties',
+    user      => 'teamcity',
+  } ->
 
-  $custom_properties = $::teamcity::custom_properties
+  file_line { "agent ${agent_name} server url":
+    ensure  => 'present',
+    path    => "${agent_dir}/conf/buildAgent.properties",
+    line    => "serverUrl=${server_url}",
+    match   => '^ *#? *serverUrl *=.*',
+  } ->
 
-  # configure buildAgent.properties
-  $merged_params = merge($required_properties, $custom_properties)
-  create_ini_settings(
-    { '' => $merged_params },
-    { 'path' => "${agent_dir}/conf/buildAgent.properties" }
-  )
+  file_line { "agent ${agent_name} own port":
+    ensure  => 'present',
+    path    => "${agent_dir}/conf/buildAgent.properties",
+    line    => "ownPort=${port}",
+    match   => '^ *#? *ownPort *=.*',
+  } ->
 
-  # configure launcher/conf/wrapper.conf
-  create_ini_settings(
-    { '' => $::teamcity::launcher_wrapper_conf },
-    { 'path' => "${agent_dir}/launcher/conf/wrapper.conf" }
-  )
-
-  file { '/etc/profile.d/teamcity.sh':
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-    content => template("${module_name}/teamcity-profile.erb"),
-  }
-
-  # This script is intended to be run manually after the installation
-  file { "${agent_dir}/first-run.sh":
-    ensure  => 'file',
-    owner   => 'teamcity',
-    group   => 'teamcity',
-    mode    => '0755',
-    content => template("${module_name}/teamcity-first-run.erb")
+  file_line { "agent ${agent_name} own name":
+    ensure  => 'present',
+    path    => "${agent_dir}/conf/buildAgent.properties",
+    line    => "name=${agent_name}",
+    match   => '^ *#? *name *=.*',
+    before  => Service["teamcity-agent-${agent_name}"],
   }
 }

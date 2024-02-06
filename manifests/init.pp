@@ -17,7 +17,7 @@ class teamcity (
 ) inherits ::teamcity::params{
 
 
-  include ::teamcity::agent::install
-  include ::teamcity::agent::config
-  include ::teamcity::agent::systemd
+ class {'teamcity::agent::install':} ->
+ class {'teamcity::agent::config':} ->
+ class {'teamcity::agent::systemd':}
 }

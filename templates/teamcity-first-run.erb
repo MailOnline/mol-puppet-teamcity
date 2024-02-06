@@ -4,13 +4,16 @@
 #
 
 # Stops the service If is running
-systemctl is-active --quiet  teamcity-agent-a26.service && systemctl stop teamcity-agent-a26.service
- /opt/teamcity_agent_a26/bin/agent.sh stop kill 2>/dev/null
+systemctl is-active --quiet  teamcity-agent-<%= @agent_name %>.service && systemctl stop teamcity-agent-<%= @agent_name %>.service
+ /opt/teamcity_agent_<%= @agent_name %>/bin/agent.sh stop kill 2>/dev/null
 # Starts the service as root using the scripts provided by teamcity and waits 120 seconds to allow it to self-upgrade
-/opt/teamcity_agent_a26/bin/agent.sh start
+/opt/teamcity_agent_<%= @agent_name %>/bin/agent.sh start
 sleep 60
 # Stops the service, fix the permissions
-/opt/teamcity_agent_a26/bin/agent.sh stop kill 2>/dev/null
-chown teamcity:teamcity /opt/teamcity_agent_a26/ -R
+/opt/teamcity_agent_<%= @agent_name %>/bin/agent.sh stop kill 2>/dev/null
+chown teamcity:teamcity /opt/teamcity_agent_<%= @agent_name %>/ -R
 # and starts again the service via systmed
-systemctl is-active --quiet  teamcity-agent-a26.service || systemctl start teamcity-agent-a26.service
+systemctl is-active --quiet  teamcity-agent-<%= @agent_name %>.service || systemctl start teamcity-agent-<%= @agent_name %>.service
+
+
+touch /opt/teamcity_agent_<%= @agent_name %>/first-run.lock
